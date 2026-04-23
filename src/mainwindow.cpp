@@ -68,6 +68,7 @@ static const std::vector<AssetFile> sAssetFiles =
     { QUrl("https://www.dropbox.com/scl/fi/rwdmx69hrhyyg1d9c475x/work_wheel.zip?rlkey=lihnbr9xnvqt2s9r3w8i52md5&st=yq8c6ii8&dl=1"), "work_wheel.zip", eFileId::eWorkWheel },
     { QUrl("https://www.dropbox.com/scl/fi/fieuk5g3w9sjsw28t55k3/slap_lock.zip?rlkey=9ik920dzaeafhx1hrfbhxq1ai&st=vn1acyq8&dl=1"), "slap_lock.zip", eFileId::eSlapLock },
     { QUrl("https://www.dropbox.com/scl/fi/rrvdkflpi7yx14ldw3fdg/bone_bag.zip?rlkey=oub9rgpjfn9r4ilfb899d4ruk&st=i4mwv1fw&dl=1"), "bone_bag.zip", eFileId::eBoneBag },
+    { QUrl("https://www.dropbox.com/scl/fi/8d8ohxyol38yzvck198gy/meat_sack.zip?rlkey=9qezqg2f9879lmyy3q1z8vgzl&st=xv46ateq&dl=1"), "meat_sack.zip", eFileId::eMeatSack },
     { QUrl("https://www.dropbox.com/scl/fi/cwrhrz9pwiuwrgvq805jk/AE_cams-001.zip?rlkey=0gyk0cplyd69oygpjm5q1wsku&st=7q5i0hhd&dl=1"), "AE_cams-001.zip", eFileId::eCams },
     { QUrl("https://www.dropbox.com/scl/fi/z3qm6t8jykofi7nr6or1f/AE_cams-002.zip?rlkey=25ce7equqjcpy3fdvlimjceha&st=0gzq4hb0&dl=1"), "AE_cams-002.zip", eFileId::eCams },
     { QUrl("https://www.dropbox.com/scl/fi/w9xytj34l51m89x9h1h2b/AE_cams-003.zip?rlkey=4arfb2hzti0h53phki269pdsj&st=6qa8cyu1&dl=1"), "AE_cams-003.zip", eFileId::eCams },

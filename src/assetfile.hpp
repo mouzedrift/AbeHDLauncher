@@ -54,6 +54,7 @@ enum class eFileId
     eLever,
     eSlapLock,
     eBoneBag,
+    eMeatSack,
     eCams,
 };
 
