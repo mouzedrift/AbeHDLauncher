@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+    <file>images/AE.png</file>
+    <file>images/AO.png</file>
+    <file>images/AE-logo.png</file>
+    <file>images/AO-logo.png</file>
+    <file>images/AE-icon.png</file>
+    <file>images/AO-icon.png</file>
+	<file>images/Discord-Symbol-White.png</file>
+</qresource>
+</RCC>
