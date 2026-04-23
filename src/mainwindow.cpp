@@ -233,6 +233,8 @@ MainWindow::MainWindow(QWidget* pParent)
 
     connect(mDownloader, &Downloader::AllDownloadsFinished, this, [this]()
     {
+        qDebug() << "all downloads finished";
+
         mUi->bigButton->setEnabled(true);
         if (!InstallRelive(mSelectedGame))
         {
@@ -242,6 +244,11 @@ MainWindow::MainWindow(QWidget* pParent)
 
         // convert game data before installing sprites and cams so they dont get overridden
         LaunchGame(mSelectedGame, true);
+    });
+
+    connect(mDownloader, &Downloader::failed, this, [this](const AssetFile& assetFile, const QString& error)
+    {
+        qDebug() << "download of file" << assetFile.fileName << "failed with error" << error;
     });
 
     connect(mUi->bigButton, &QPushButton::pressed, this, [this]()
