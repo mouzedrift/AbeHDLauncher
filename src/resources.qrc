@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/">
+    <file>fonts/URW Contemporary Brush W01 Bd.ttf</file>
+    <file>fonts/NewPortLandOpti-Regular.otf</file>
     <file>images/MenuButton.png</file>
     <file>images/MenuButtonPressed.png</file>
     <file>images/MainBackground2.png</file>
