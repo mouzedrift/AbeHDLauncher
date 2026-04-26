@@ -100,6 +100,17 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
         emit Accepted(assetsToInstall);
         close();
     });
+
+    mUi->SligAENoTubes->hide();
+    mUi->SligAETubes->hide();
+    mUi->SligAONoTubes->hide();
+    mUi->SligAOTubes->hide();
+    mUi->SligMONoTubes->hide();
+    mUi->SligMOTubes->hide();
+
+    // default skin for AE
+    mUi->SligAONoTubes->show();
+    mUi->sligAONoTubesRadioButton->setChecked(true);
 }
 
 AssetsDialog::~AssetsDialog()
