@@ -1,5 +1,5 @@
-#include <QApplication>
 #include "mainwindow.hpp"
+#include <QApplication>
 #include <QMessageBox>
 
 int main(int argc, char* argv[])

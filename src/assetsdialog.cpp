@@ -1,5 +1,11 @@
 #include "assetsdialog.hpp"
 #include "ui_assetsdialog.h"
+#include <QButtonGroup>
+
+static bool IsDownloaded(const AssetFile& assetFile)
+{
+    return QFile::exists(GetAssetsPath() + "/" + assetFile.fileName);
+}
 
 AssetsDialog::AssetsDialog(QWidget* pParent)
     : QDialog(pParent)
@@ -7,53 +13,96 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
 {
     mUi->setupUi(this);
 
-    connect(mUi->selectAllButton, &QPushButton::pressed, this, [this]()
+    connect(mUi->ConfirmButton, &QPushButton::pressed, this, [this]()
     {
-        for (int i = 0; i < mUi->listWidget->count(); i++)
+        QList<AssetFile> assetsToInstall;
+        if (!IsDownloaded(kReliveAsset))
         {
-            QListWidgetItem* pItem = mUi->listWidget->item(i);
-            pItem->setCheckState(Qt::Checked);
-         }
-    });
-
-    connect(mUi->unselectAllButton, &QPushButton::pressed, this, [this]()
-    {
-        for (int i = 0; i < mUi->listWidget->count(); i++)
-        {
-            QListWidgetItem* pItem = mUi->listWidget->item(i);
-            pItem->setCheckState(Qt::Unchecked);
+            assetsToInstall.append(kReliveAsset);
         }
-    });
 
-    connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, [this]()
-    {
-        QList<AssetFile> assetFiles;
-        for (int i = 0; i < mUi->listWidget->count(); i++)
+        for (auto& asset : kSpritesAndCamsAssets)
         {
-            QListWidgetItem* pItem = mUi->listWidget->item(i);
-            if (pItem->checkState() == Qt::Checked)
+            if (IsDownloaded(asset))
             {
-                assetFiles.append(pItem->data(Qt::UserRole).value<AssetFile>());
+                continue;
             }
+
+            if (asset.fileId == eFileId::eAbeOriginal)
+            {
+                if (mUi->abeOriginalRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eAbeFMV)
+            {
+                if (mUi->abeFMVRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+
+            if (asset.fileId == eFileId::eSligAENoTubes)
+            {
+                if (mUi->sligAENoTubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eSligAETubes)
+            {
+                if (mUi->sligAETubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eSligAONoTubes)
+            {
+                if (mUi->sligAONoTubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eSligAOTubes)
+            {
+                if (mUi->sligAOTubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eSligMONoTubes)
+            {
+                if (mUi->sligMONoTubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+            else if (asset.fileId == eFileId::eSligMOTubes)
+            {
+                if (mUi->sligMOTubesRadioButton->isChecked())
+                {
+                    assetsToInstall.append(asset);
+                }
+                continue;
+            }
+
+            assetsToInstall.append(asset);
         }
 
-        emit Accepted(assetFiles);
+        emit Accepted(assetsToInstall);
+        close();
     });
 }
 
 AssetsDialog::~AssetsDialog()
 {
     delete mUi;
-}
-
-void AssetsDialog::Populate(const std::vector<AssetFile>& assets)
-{
-    for (auto& asset : assets)
-    {
-        QListWidgetItem* pItem = new QListWidgetItem(mUi->listWidget);
-        pItem->setText(asset.fileName);
-        pItem->setData(Qt::UserRole, QVariant::fromValue(asset));
-        pItem->setFlags(pItem->flags() | Qt::ItemIsUserCheckable);
-        pItem->setCheckState(Qt::Unchecked);
-    }
 }

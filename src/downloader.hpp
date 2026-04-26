@@ -17,6 +17,8 @@ public:
 
     void AddDownload(const AssetFile& assetFile, const QString& outputPath);
     void StartDownloads();
+    int GetTotalDownloads() const { return mTotalDownloads; }
+    int GetCurrentDownloadNum() const { return mCurrentDownloadNum; }
 
 signals:
     void progress(const AssetFile& assetFile, qint64 received, qint64 total);
@@ -33,6 +35,8 @@ private:
 
     QQueue<Job> mQueue;
     QNetworkAccessManager* mManager;
+    int mTotalDownloads = 0;
+    int mCurrentDownloadNum = 0;
 
     void ProcessQueue();
     void StartDownload(const Job& job);

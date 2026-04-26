@@ -15,6 +15,9 @@ void Downloader::AddDownload(const AssetFile& assetFile, const QString& outputPa
 
 void Downloader::StartDownloads()
 {
+    mTotalDownloads = static_cast<int>(mQueue.size());
+    mCurrentDownloadNum = 0;
+
     ProcessQueue();
 }
 
@@ -24,6 +27,7 @@ void Downloader::ProcessQueue()
     {
         Job job = mQueue.dequeue();
         StartDownload(job);
+        mCurrentDownloadNum++;
     }
     else
     {

@@ -1,11 +1,28 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/">
-    <file>images/AE.png</file>
-    <file>images/AO.png</file>
+<RCC>
+  <qresource prefix="/">
+    <file>images/MenuButton.png</file>
+    <file>images/MenuButtonPressed.png</file>
+    <file>images/MainBackground2.png</file>
+    <file>images/ConfirmButtonFlat.png</file>
+    <file>images/ConfirmButton.png</file>
+    <file>images/RadioButtonChecked.png.png</file>
+    <file>images/RadioButtonUnhecked.png</file>
+    <file>images/R1P15C04.png</file>
+    <file>images/BAP01C06.png</file>
+    <file>images/FDP07C03.png</file>
+    <file>images/Slig_Idle(AE no tubes) .png</file>
+    <file>images/Slig_Idle(AE tubes).png</file>
+    <file>images/Slig_Idle(AO no tubes).png</file>
+    <file>images/Slig_Idle(AO tubes).png</file>
+    <file>images/Slig_Idle(MO no tubes).png</file>
+    <file>images/Slig_Idle(MO tubes).png</file>
+    <file>images/3 (1).png</file>
+    <file>images/3.png</file>
+    <file>images/2NEP03C20.png</file>
     <file>images/AE-logo.png</file>
     <file>images/AO-logo.png</file>
-    <file>images/AE-icon.png</file>
-    <file>images/AO-icon.png</file>
-	<file>images/Discord-Symbol-White.png</file>
-</qresource>
+    <file>images/Discord-Symbol-White.png</file>
+    <file>images/AEBackground2.png</file>
+    <file>images/AOBackground.png</file>
+  </qresource>
 </RCC>

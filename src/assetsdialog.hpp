@@ -17,11 +17,11 @@ public:
     explicit AssetsDialog(QWidget* pParent = nullptr);
     ~AssetsDialog();
 
-    void Populate(const std::vector<AssetFile>& assets);
-
 signals:
-    void Accepted(QList<AssetFile> assetFiles);
+    void Accepted(QList<AssetFile> assetsToInstall);
 
 private:
     Ui::AssetsDialog* mUi = nullptr;
+    AssetFile mSelectedAbeSkin;
+    AssetFile mSelectedSligSkin;
 };
