@@ -4761,8 +4761,7 @@ QRadioButton::indicator::unchecked {
 	border-image: url(:/images/ConfirmButton.png);
 }
 
-QPushButton:pressed {
-    
+QPushButton:hover {   
 	border-image: url(:/images/ConfirmButtonFlat.png);
 }</string>
    </property>

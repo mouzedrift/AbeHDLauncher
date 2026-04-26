@@ -40,5 +40,5 @@ target_include_directories(AbeHDLauncher PRIVATE 3rdParty)
 target_link_libraries(AbeHDLauncher PRIVATE Qt6::Widgets Qt6::Network dwmapi)
 
 set_target_properties(AbeHDLauncher PROPERTIES
-    WIN32_EXECUTABLE OFF
+    WIN32_EXECUTABLE ON
 )

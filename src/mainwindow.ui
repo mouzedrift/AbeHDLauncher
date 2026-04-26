@@ -263,7 +263,7 @@ QProgressBar::chunk {
      <rect>
       <x>600</x>
       <y>590</y>
-      <width>321</width>
+      <width>351</width>
       <height>104</height>
      </rect>
     </property>
@@ -290,17 +290,24 @@ QProgressBar::chunk {
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="styleSheet">
-        <string notr="true">background:transparent;</string>
+        <string notr="true">QPushButton
+{
+	background:transparent;
+	icon: url(:/images/MenuButton.png);
+}
+
+QPushButton:hover
+{
+	background:transparent;
+	icon: url(:/images/MenuButtonPressed.png);
+}</string>
        </property>
        <property name="text">
         <string>PLAY EXODDUS HD</string>
        </property>
        <property name="icon">
         <iconset resource="resources.qrc">
-         <normaloff>:/images/MenuButton.png</normaloff>
-         <normalon>:/images/MenuButtonPressed.png</normalon>
-         <activeon>:/images/MenuButtonPressed.png</activeon>
-         <selectedon>:/images/MenuButtonPressed.png</selectedon>:/images/MenuButton.png</iconset>
+         <normaloff>:/images/MenuButton.png</normaloff>:/images/MenuButton.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -332,7 +339,17 @@ QProgressBar::chunk {
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="styleSheet">
-        <string notr="true">background:transparent;</string>
+        <string notr="true">QPushButton
+{
+	background:transparent;
+	icon: url(:/images/MenuButton.png);
+}
+
+QPushButton:hover
+{
+	background:transparent;
+	icon: url(:/images/MenuButtonPressed.png);
+}</string>
        </property>
        <property name="text">
         <string>INSTALL</string>
