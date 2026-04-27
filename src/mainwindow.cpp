@@ -7,7 +7,6 @@
 #include <QProcess>
 #include "assetfile.hpp"
 #include <QMessageBox>
-#include <QPainter>
 #include <QDesktopServices>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -217,12 +216,12 @@ MainWindow::MainWindow(QWidget* pParent)
         QDesktopServices::openUrl(QUrl("https://discord.com/invite/Ca5uB4JByA"));
     });
 
-    connect(mUi->aoButton, &QPushButton::pressed, this, [this]()
+    connect(mUi->aoRadioButton, &QPushButton::pressed, this, [this]()
     {
         SetSelectedGame(eGameType::eAO);
     });
 
-    connect(mUi->aeButton, &QPushButton::pressed, this, [this]()
+    connect(mUi->aeRadioButton, &QPushButton::pressed, this, [this]()
     {
         SetSelectedGame(eGameType::eAE);
     });

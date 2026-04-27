@@ -66,7 +66,7 @@
      <rect>
       <x>40</x>
       <y>240</y>
-      <width>521</width>
+      <width>571</width>
       <height>302</height>
      </rect>
     </property>
@@ -75,63 +75,72 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="aoButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="maximumSize">
+      <widget class="QRadioButton" name="aoRadioButton">
+       <property name="minimumSize">
         <size>
-         <width>500</width>
-         <height>500</height>
+         <width>250</width>
+         <height>270</height>
         </size>
        </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="styleSheet">
-        <string notr="true">QPushButton { background-color: transparent; border: none; }</string>
+        <string notr="true">QRadioButton::indicator {
+    width: 250px;
+    height: 270px;
+}
+
+QRadioButton::indicator::unchecked
+ {  
+	image: url(:/images/AO logo.png);
+}
+
+QRadioButton::indicator::checked
+ {  
+	image: url(:/images/AO logo with glow.png);
+}</string>
        </property>
        <property name="text">
         <string/>
        </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/images/AO-logo.png</normaloff>:/images/AO-logo.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>250</width>
-         <height>270</height>
-        </size>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="aeButton">
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton { background-color: transparent; border: none; }</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/images/AE-logo.png</normaloff>:/images/AE-logo.png</iconset>
-       </property>
-       <property name="iconSize">
+      <widget class="QRadioButton" name="aeRadioButton">
+       <property name="minimumSize">
         <size>
          <width>250</width>
          <height>270</height>
         </size>
        </property>
-       <property name="default">
-        <bool>false</bool>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
-       <property name="flat">
-        <bool>false</bool>
+       <property name="styleSheet">
+        <string notr="true">QRadioButton::indicator {
+    width: 250px;
+    height: 270px;
+}
+
+QRadioButton::indicator::unchecked
+ {  
+	image: url(:/images/AE logo.png);
+}
+
+QRadioButton::indicator::checked
+ {  
+	image: url(:/images/AE logo with glow.png);
+}</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -397,34 +406,34 @@ QPushButton:hover
  </resources>
  <connections>
   <connection>
-   <sender>aeButton</sender>
-   <signal>pressed()</signal>
+   <sender>aeRadioButton</sender>
+   <signal>clicked()</signal>
    <receiver>AOBackground</receiver>
    <slot>lower()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>477</x>
-     <y>461</y>
+     <x>467</x>
+     <y>390</y>
     </hint>
     <hint type="destinationlabel">
-     <x>432</x>
-     <y>180</y>
+     <x>860</x>
+     <y>210</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>aoButton</sender>
-   <signal>pressed()</signal>
+   <sender>aoRadioButton</sender>
+   <signal>clicked()</signal>
    <receiver>AEBackground</receiver>
    <slot>lower()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>433</y>
+     <x>183</x>
+     <y>390</y>
     </hint>
     <hint type="destinationlabel">
-     <x>928</x>
-     <y>340</y>
+     <x>680</x>
+     <y>210</y>
     </hint>
    </hints>
   </connection>
