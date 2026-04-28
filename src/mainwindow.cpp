@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "assetsdialog.hpp"
 #include <windows.h>
 #include <dwmapi.h>
@@ -17,6 +18,46 @@
 extern "C"
 {
     #include <zip/zip.h>
+}
+
+static QString GetInfoJsonPath()
+{
+    return QCoreApplication::applicationDirPath() + "/info.json";
+}
+
+static bool ReadInfoJsonInto(QJsonDocument* pOutJsonDocument)
+{
+    if (!QFile::exists(GetInfoJsonPath()) || !pOutJsonDocument)
+    {
+        return false;
+    }
+
+    QFile infoJson(GetInfoJsonPath());
+    if (!infoJson.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+
+    QJsonParseError error;
+    *pOutJsonDocument = QJsonDocument::fromJson(infoJson.readAll(), &error);
+
+    infoJson.close();
+
+    return error.error == QJsonParseError::NoError;
+}
+
+static bool WriteInfoJson(const QJsonDocument& jsonDocument)
+{
+    QFile infoJson(GetInfoJsonPath());
+    if (!infoJson.open(QIODevice::WriteOnly))
+    {
+        return false;
+    }
+
+    infoJson.write(jsonDocument.toJson());
+    infoJson.close();
+
+    return true;
 }
 
 static std::string CamNameToReliveDataPath(const std::string& camName, const std::string& gameInstallPath, eGameType gameType)
@@ -147,12 +188,26 @@ MainWindow::MainWindow(QWidget* pParent)
 {
     mUi->setupUi(this);
 
+    mAssetManager.Load();
+
+    if (!QFile::exists(GetInfoJsonPath()))
+    {
+        QFile infoJson(GetInfoJsonPath());
+        if (infoJson.open(QIODevice::WriteOnly))
+        {
+            infoJson.write("{}");
+            infoJson.close();
+        }
+        else
+        {
+            qDebug() << "couldn't open info json for writing";
+        }
+    }
+
     HWND hwnd = reinterpret_cast<HWND>(winId());
     EnableDarkTitleBar(hwnd);
     
     SetSelectedGame(eGameType::eAE);
-
-    QDir().mkpath(GetAssetsPath());
 
     setFixedSize(size());
 
@@ -196,18 +251,14 @@ MainWindow::MainWindow(QWidget* pParent)
 
     connect(mUi->playButton, &QPushButton::pressed, this, [this]()
     {
-        if (mGameProcess && mPlayButtonState != ePlayButtonState::eWaitForLaunch)
+        if (mGameProcess)
         {
-            CloseGame();
-
+            return;
         }
-        else if (!LaunchGame(mSelectedGame, false))
+
+        if (!LaunchGame(mSelectedGame, false))
         {
             QMessageBox::warning(this, "Warning", "Couldn't launch game (make sure the game is installed on steam)");
-        }
-        else if (mPlayButtonState == ePlayButtonState::eWaitForExit)
-        {
-            SetPlayButtonState(ePlayButtonState::eWaitForLaunch);
         }
     });
 
@@ -234,7 +285,7 @@ MainWindow::MainWindow(QWidget* pParent)
             return;
         }
 
-        auto pDialog = new AssetsDialog(this);
+        auto pDialog = new AssetsDialog(mAssetManager, this);
         connect(pDialog, &AssetsDialog::Accepted, this, [this](QList<AssetFile> assetsToInstall)
         {
             qDebug() << "selected " << assetsToInstall.size() << "assets for installation";
@@ -258,7 +309,10 @@ void MainWindow::StartDownload(eGameType gameType)
 {
     for (const AssetFile& asset : mAssetsToInstall)
     {
-        mDownloader->AddDownload(asset, GetAssetsPath() + "/" + asset.fileName);
+        if (!mAssetManager.IsDownloaded(asset))
+        {
+            mDownloader->AddDownload(asset, mAssetManager.GetAssetFilePath(asset));
+        }
     }
 
     mDownloader->StartDownloads();
@@ -266,6 +320,23 @@ void MainWindow::StartDownload(eGameType gameType)
 
 bool MainWindow::InstallRelive(eGameType gameType)
 {
+    QJsonDocument jsonDocument;
+    if (!ReadInfoJsonInto(&jsonDocument))
+    {
+        return false;
+    }
+
+    QJsonObject root = jsonDocument.object();
+    bool bGameInstalled = IsGameInstalled(gameType, jsonDocument);
+    for (const auto& val : root["installed_file_ids"].toArray())
+    {
+        // the relive exe and the game is already installed
+        if (val.toString() == "relive" && bGameInstalled)
+        {
+            return true;
+        }
+    }
+
     QString gameInstallPath = FindGameInstallPath(gameType);
     if (gameInstallPath.isEmpty())
     {
@@ -275,7 +346,8 @@ bool MainWindow::InstallRelive(eGameType gameType)
     QString zipAnimOutPath = gameInstallPath + "/relive_data/" + (gameType == eGameType::eAE ? "ae" : "ao") + "/animations";
     QDir().mkpath(zipAnimOutPath);
 
-    QString zipFilePath = GetAssetsPath() + "/" + kReliveAsset.fileName;
+    const AssetFile* pReliveAsset = mAssetManager.FindById("relive");
+    QString zipFilePath = mAssetManager.GetAssetFilePath(*pReliveAsset);
     int error = zip_extract(zipFilePath.toUtf8().constData(), gameInstallPath.toUtf8().constData(), nullptr, nullptr);
     if (error != 0)
     {
@@ -297,28 +369,60 @@ void MainWindow::InstallSpritesAndCams(eGameType gameType)
     QString zipAnimOutPath = gameInstallPath + "/relive_data/" + (gameType == eGameType::eAE ? "ae" : "ao") + "/animations";
     QDir().mkpath(zipAnimOutPath);
 
+    QJsonDocument jsonDocument;
+    if (!ReadInfoJsonInto(&jsonDocument))
+    {
+        return;
+    }
+
+    QJsonObject root = jsonDocument.object();
+    QJsonArray installedFilesArray = root["installed_file_ids"].toArray();
     for (const AssetFile& asset : mAssetsToInstall)
     {
-        QString zipFilePath = GetAssetsPath() + "/" + asset.fileName;
+        QString zipFilePath = mAssetManager.GetAssetFilePath(asset);
         if (!QFile::exists(zipFilePath))
         {
             qDebug() << "skipping missing file" << zipFilePath;
             continue;
         }
 
-        if (asset.fileId != eFileId::eCams) // extract sprites
+        // skip already installed files
+        bool bAlreadyInstalled = false;
+        for (const auto& val : installedFilesArray)
+        {
+            const QString fileId = val.toString();
+            if (fileId == asset.fileId)
+            {
+                bAlreadyInstalled = true;
+                break;
+            }
+        }
+
+        if (bAlreadyInstalled)
+        {
+            continue;
+        }
+
+        bool bFileInstallSuccess = false;
+
+        QJsonObject jsonObject = jsonDocument.object();
+        if (!asset.fileId.contains("ae_cams_part")) // extract sprites
         {
             qDebug() << "extracting" << asset.fileName << "to" << zipAnimOutPath;
             int error = zip_extract(zipFilePath.toUtf8().constData(), zipAnimOutPath.toUtf8().constData(), nullptr, nullptr);
             if (error != 0)
             {
                 qDebug() << "Extraction failed for:" << zipFilePath << "with error" << zip_strerror(error);
+                continue;
             }
+
+            bFileInstallSuccess = true;
         }
-        else if (asset.fileId == eFileId::eCams) // extract cams
+        else if (asset.fileId != "relive") // extract cams
         {
             zip_t* zip = zip_open(zipFilePath.toUtf8().constData(), 0, 'r');
             int n = zip_entries_total(zip);
+            bool bAnyCamExtractionFailed = false;
             for (int i = 0; i < n; i++)
             {
                 zip_entry_openbyindex(zip, i);
@@ -343,6 +447,7 @@ void MainWindow::InstallSpritesAndCams(eGameType gameType)
                 {
                     zip_entry_close(zip);
                     qDebug() << "couldn't resolve camera output path for cam" << filename;
+                    bAnyCamExtractionFailed = true;
                     continue;
                 }
 
@@ -356,37 +461,42 @@ void MainWindow::InstallSpritesAndCams(eGameType gameType)
 
                 // write cam file
                 QFile out(QString::fromStdString(camOutPath));
-                if (out.open(QIODevice::WriteOnly))
+                if (!out.open(QIODevice::WriteOnly))
                 {
-                    out.write(buffer.data(), static_cast<qint64>(size));
-                    out.close();
+                    qDebug() << "couldn't open" << camOutPath.c_str() << "for writing";
+                    bAnyCamExtractionFailed = true;
+                    continue;
                 }
+
+                out.write(buffer.data(), static_cast<qint64>(size));
+                out.close();
 
                 qDebug() << "extracting" << asset.fileName << "to" << camOutPath;
             }
 
             zip_close(zip);
+
+            bFileInstallSuccess = !bAnyCamExtractionFailed;
+        }
+
+        if (bFileInstallSuccess)
+        {
+            installedFilesArray.append(asset.fileId);
         }
     }
 
-    QJsonObject obj;
+    root["installed_file_ids"] = installedFilesArray;
+
     if (gameType == eGameType::eAO)
     {
-        obj["OddyseeInstalled"] = true;
+        root["oddysee_installed"] = true;
     }
     else
     {
-        obj["ExoddusInstalled"] = true;
+        root["exoddus_installed"] = true;
     }
 
-    QJsonDocument doc(obj);
-
-    QFile infoJson(GetInfoJsonPath());
-    if (infoJson.open(QIODevice::WriteOnly))
-    {
-        infoJson.write(doc.toJson(QJsonDocument::Indented));
-        infoJson.close();
-    }
+    WriteInfoJson(QJsonDocument(root));
 
     SetPlayButtonState(ePlayButtonState::eWaitForLaunch);
 
@@ -480,7 +590,7 @@ bool MainWindow::LaunchGame(eGameType gameType, bool bOnlyDoConversion)
         CloseGame();
     }
 
-    mGameProcess = new QProcess(this);
+    mGameProcess = new QProcess(nullptr);
     mGameProcess->setWorkingDirectory(gameInstallPath);
 
     QStringList args;
@@ -491,7 +601,7 @@ bool MainWindow::LaunchGame(eGameType gameType, bool bOnlyDoConversion)
 
     mGameProcess->start(relivePath, args);
 
-    connect(mGameProcess, &QProcess::finished,this, [this, bOnlyDoConversion, gameType](int exitCode, QProcess::ExitStatus status)
+    connect(mGameProcess, &QProcess::finished, this, [this, bOnlyDoConversion, gameType](int exitCode, QProcess::ExitStatus status)
     {
         if (mGameProcess)
         {
@@ -509,8 +619,6 @@ bool MainWindow::LaunchGame(eGameType gameType, bool bOnlyDoConversion)
         }
     });
 
-    SetPlayButtonState(ePlayButtonState::eWaitForExit);
-
     return true;
 }
 
@@ -520,10 +628,6 @@ void MainWindow::SetPlayButtonState(ePlayButtonState state)
     if (state == ePlayButtonState::eWaitForLaunch || state == ePlayButtonState::eWaitForDownload)
     {
         mUi->playButton->setText("PLAY " + gameName + " HD");
-    }
-    else if (state == ePlayButtonState::eWaitForExit)
-    {
-        mUi->playButton->setText("CLOSE GAME");
     }
 
     mPlayButtonState = state;
@@ -548,9 +652,14 @@ void MainWindow::SetSelectedGame(eGameType game)
 
     mSelectedGame = game;
 
-    bool bIsGameInstalled = IsGameInstalled(game);
-    mUi->playButton->setDisabled(!bIsGameInstalled);
+    QJsonDocument jsonDocument;
+    bool bIsGameInstalled = false;
+    if (ReadInfoJsonInto(&jsonDocument))
+    {
+        bIsGameInstalled = IsGameInstalled(game, jsonDocument);
+    }
 
+    mUi->playButton->setDisabled(!bIsGameInstalled);
     if (!bIsGameInstalled)
     {
         SetPlayButtonState(ePlayButtonState::eWaitForDownload);
@@ -559,28 +668,10 @@ void MainWindow::SetSelectedGame(eGameType game)
     {
         SetPlayButtonState(ePlayButtonState::eWaitForLaunch);
     }
-
-    // force repaint on game change for the background image
-    update();
 }
 
-bool MainWindow::IsGameInstalled(eGameType game)
+bool MainWindow::IsGameInstalled(eGameType game, const QJsonDocument& infoJsonDocument)
 {
-    if (!QFile::exists(GetInfoJsonPath()))
-    {
-        return false;
-    }
-
-    QFile infoJson(GetInfoJsonPath());
-    infoJson.open(QIODevice::ReadOnly);
-
-    QJsonDocument doc = QJsonDocument::fromJson(infoJson.readAll());
-    QJsonObject obj = doc.object();
-
-    if (game == eGameType::eAO)
-    {
-        return obj["OddyseeInstalled"].toBool();
-    }
-
-    return obj["ExoddusInstalled"].toBool();
+    QJsonObject root = infoJsonDocument.object();
+    return game == eGameType::eAO ? root["oddysee_installed"].toBool() : root["exoddus_installed"].toBool();
 }

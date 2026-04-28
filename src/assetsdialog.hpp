@@ -9,12 +9,14 @@ namespace Ui
     class AssetsDialog;
 }
 
+class AssetManager;
+
 class AssetsDialog final : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit AssetsDialog(QWidget* pParent = nullptr);
+    explicit AssetsDialog(AssetManager& assetManager, QWidget* pParent = nullptr);
     ~AssetsDialog();
 
 signals:
@@ -24,4 +26,5 @@ private:
     Ui::AssetsDialog* mUi = nullptr;
     AssetFile mSelectedAbeSkin;
     AssetFile mSelectedSligSkin;
+    AssetManager& mAssetManager;
 };

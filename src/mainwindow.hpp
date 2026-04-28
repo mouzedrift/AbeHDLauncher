@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include "assetfile.hpp"
+#include "assetmanager.hpp"
 
 namespace Ui
 {
@@ -18,7 +19,6 @@ enum class ePlayButtonState
 {
     eWaitForDownload,
     eWaitForLaunch,
-    eWaitForExit
 };
 
 class MainWindow final : public QMainWindow
@@ -41,7 +41,7 @@ private:
     void CloseGame();
     void OnSelectedGameChanged();
     void SetSelectedGame(eGameType game);
-    bool IsGameInstalled(eGameType game);
+    bool IsGameInstalled(eGameType game, const QJsonDocument& infoJsonDocument);
 
     Ui::MainWindow* mUi = nullptr;
     class Downloader* mDownloader = nullptr;
@@ -50,4 +50,5 @@ private:
     class QProcess* mGameProcess = nullptr;
     QList<AssetFile> mAssetsToInstall;
     bool mIsInstalling = false;
+    AssetManager mAssetManager;
 };

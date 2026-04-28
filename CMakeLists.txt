@@ -29,6 +29,8 @@ set(abe_hd_launcher_src
     src/assetsdialog.ui
     src/assetsdialog.hpp
     src/assetsdialog.cpp
+    src/assetmanager.hpp
+    src/assetmanager.cpp
 )
 
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/src/icon.rc")

@@ -1,34 +1,21 @@
 #include "assetsdialog.hpp"
 #include "ui_assetsdialog.h"
 #include <QButtonGroup>
+#include "assetmanager.hpp"
 
-static bool IsDownloaded(const AssetFile& assetFile)
-{
-    return QFile::exists(GetAssetsPath() + "/" + assetFile.fileName);
-}
-
-AssetsDialog::AssetsDialog(QWidget* pParent)
+AssetsDialog::AssetsDialog(AssetManager& assetManager, QWidget* pParent)
     : QDialog(pParent)
     , mUi(new Ui::AssetsDialog)
+    , mAssetManager(assetManager)
 {
     mUi->setupUi(this);
 
     connect(mUi->ConfirmButton, &QPushButton::pressed, this, [this]()
     {
         QList<AssetFile> assetsToInstall;
-        if (!IsDownloaded(kReliveAsset))
+        for (const auto& asset : mAssetManager.Assets())
         {
-            assetsToInstall.append(kReliveAsset);
-        }
-
-        for (auto& asset : kSpritesAndCamsAssets)
-        {
-            if (IsDownloaded(asset))
-            {
-                continue;
-            }
-
-            if (asset.fileId == eFileId::eAbeOriginal)
+            if (asset.fileId == "abe_original")
             {
                 if (mUi->abeOriginalRadioButton->isChecked())
                 {
@@ -36,7 +23,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eAbeFMV)
+            else if (asset.fileId == "abe_fmv")
             {
                 if (mUi->abeFMVRadioButton->isChecked())
                 {
@@ -45,7 +32,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 continue;
             }
 
-            if (asset.fileId == eFileId::eSligAENoTubes)
+            if (asset.fileId == "slig_ae_no_tubes")
             {
                 if (mUi->sligAENoTubesRadioButton->isChecked())
                 {
@@ -53,7 +40,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eSligAETubes)
+            else if (asset.fileId == "slig_ae_tubes")
             {
                 if (mUi->sligAETubesRadioButton->isChecked())
                 {
@@ -61,7 +48,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eSligAONoTubes)
+            else if (asset.fileId == "slig_ao_no_tubes")
             {
                 if (mUi->sligAONoTubesRadioButton->isChecked())
                 {
@@ -69,7 +56,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eSligAOTubes)
+            else if (asset.fileId == "slig_ao_tubes")
             {
                 if (mUi->sligAOTubesRadioButton->isChecked())
                 {
@@ -77,7 +64,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eSligMONoTubes)
+            else if (asset.fileId == "slig_mo_no_tubes")
             {
                 if (mUi->sligMONoTubesRadioButton->isChecked())
                 {
@@ -85,7 +72,7 @@ AssetsDialog::AssetsDialog(QWidget* pParent)
                 }
                 continue;
             }
-            else if (asset.fileId == eFileId::eSligMOTubes)
+            else if (asset.fileId == "slig_mo_tubes")
             {
                 if (mUi->sligMOTubesRadioButton->isChecked())
                 {
