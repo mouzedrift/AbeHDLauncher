@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbeHDLauncher", "AbeHDLauncher.csproj", "{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{B142B3DF-556A-4BE8-8BF1-5D9BA811CF8F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal

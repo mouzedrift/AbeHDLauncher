@@ -1,0 +1,199 @@
+[gd_scene format=3 uid="uid://c3ms531r8rqsj"]
+
+[ext_resource type="Script" uid="uid://c1ht5f7gdkrda" path="res://Core/Launcher.cs" id="1_0bbs5"]
+[ext_resource type="Texture2D" uid="uid://bcyv8yv8q4ese" path="res://Assets/Images/AEBackground2.png" id="2_0bbs5"]
+[ext_resource type="Texture2D" uid="uid://bdpssrbxvftxk" path="res://Assets/Images/MainBackground2.png" id="3_sq1mr"]
+[ext_resource type="Texture2D" uid="uid://dg6vutews7otr" path="res://Assets/Images/Discord-Symbol-White.png" id="4_caj3u"]
+[ext_resource type="Texture2D" uid="uid://b8vm024co8e8y" path="res://Assets/Images/AO logo.png" id="5_s33kt"]
+[ext_resource type="Texture2D" uid="uid://bnpgt3ft58aw1" path="res://Assets/Images/AO logo with glow.png" id="6_6j5ad"]
+[ext_resource type="Texture2D" uid="uid://cwmyhkrdm3kvw" path="res://Assets/Images/AE logo.png" id="7_b2jyd"]
+[ext_resource type="Texture2D" uid="uid://b1uuoml23of2k" path="res://Assets/Images/AE logo with glow.png" id="8_ngt75"]
+[ext_resource type="Texture2D" uid="uid://buaojaucqdy0e" path="res://Assets/Images/MenuButton.png" id="9_4g5kg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2ujcm"]
+font_size = 64
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_0bbs5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bbs5"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tx7q6"]
+bg_color = Color(0.6, 0, 1, 1)
+
+[node name="Launcher" type="Control" unique_id=1297101856 node_paths=PackedStringArray("_discordButton", "_installButton", "_backgroundTexture", "_aoButton", "_aeButton", "_downloadLabel", "_downloadProgressBar", "_playButton", "_progressBarLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0bbs5")
+_discordButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/Discord")
+_installButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer3/InstallButton")
+_backgroundTexture = NodePath("GameBackground")
+_aoButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox/GameButtons/AOButton")
+_aeButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox/GameButtons/AEButton")
+_downloadLabel = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox/Label")
+_downloadProgressBar = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox/ProgressBar")
+_playButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer3/PlayButton")
+_progressBarLabel = NodePath("MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox/ProgressBar/ProgressBarLabel")
+
+[node name="GameBackground" type="TextureRect" parent="." unique_id=891955924]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_0bbs5")
+
+[node name="MainBackground2" type="TextureRect" parent="." unique_id=122189672]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_sq1mr")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1641389675]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=2062315491]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=34479135]
+layout_mode = 2
+
+[node name="Discord" type="TextureButton" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=548789862]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("4_caj3u")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1513774084]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChooseGameBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=536832627]
+custom_maximum_size = Vector2(-1, 512)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox" unique_id=639870877]
+layout_mode = 2
+size_flags_vertical = 6
+text = "CHOOSE GAME"
+label_settings = SubResource("LabelSettings_2ujcm")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="GameButtons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox" unique_id=61594831]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AOButton" type="TextureButton" parent="MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox/GameButtons" unique_id=863370444]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_0bbs5")
+texture_normal = ExtResource("5_s33kt")
+texture_pressed = ExtResource("6_6j5ad")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="AEButton" type="TextureButton" parent="MarginContainer/HBoxContainer/VBoxContainer2/ChooseGameBox/GameButtons" unique_id=1650702847]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_0bbs5")
+texture_normal = ExtResource("7_b2jyd")
+texture_pressed = ExtResource("8_ngt75")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Spacer2" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=790105452]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProgressBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1726082859]
+layout_mode = 2
+size_flags_horizontal = 3
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -13)
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox" unique_id=1810032295]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox" unique_id=2060138452]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_0bbs5")
+theme_override_styles/fill = SubResource("StyleBoxFlat_tx7q6")
+show_percentage = false
+
+[node name="ProgressBarLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2/ProgressBox/ProgressBar" unique_id=386689125]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=783041444]
+custom_minimum_size = Vector2(300, 0)
+custom_maximum_size = Vector2(300, -1)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/separation = -16
+
+[node name="Spacer" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer3" unique_id=1451691068]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+
+[node name="PlayButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3" unique_id=74782521]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
+text = "PLAY"
+icon = ExtResource("9_4g5kg")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="InstallButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3" unique_id=155147884]
+propagate_maximum_size = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 46
+text = "INSTALL"
+icon = ExtResource("9_4g5kg")
+flat = true
+alignment = 0
+expand_icon = true

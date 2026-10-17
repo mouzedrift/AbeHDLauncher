@@ -1,0 +1,238 @@
+[gd_scene format=3 uid="uid://cag4lhasmyks1"]
+
+[ext_resource type="Script" uid="uid://k5g7gssh51n7" path="res://Core/SelectAssetsDialog.cs" id="1_anh5s"]
+[ext_resource type="Texture2D" uid="uid://co4hqg0smxipl" path="res://Assets/Images/R1P15C04.png" id="2_r1ac7"]
+[ext_resource type="Texture2D" uid="uid://ccdyqlpdjwnfi" path="res://Assets/Images/BAP01C06.png" id="3_xht23"]
+[ext_resource type="Texture2D" uid="uid://c8t08e4ceiot0" path="res://Assets/Images/2NEP03C20.png" id="4_m3b3p"]
+[ext_resource type="Texture2D" uid="uid://y2ug4a0kchv8" path="res://Assets/Images/Slig_Idle(AE no tubes) .png" id="4_q2mxf"]
+[ext_resource type="FontFile" uid="uid://7lkyoy21aqhf" path="res://Assets/Fonts/URW Contemporary Brush W01 Bd.ttf" id="5_asvt5"]
+[ext_resource type="Texture2D" uid="uid://8rq8dxicd3hp" path="res://Assets/Images/3.png" id="5_en3da"]
+[ext_resource type="Texture2D" uid="uid://da77cbvw6f1gd" path="res://Assets/Images/RadioButtonChecked.png" id="6_54gxj"]
+[ext_resource type="Texture2D" uid="uid://b7su4nvb1563f" path="res://Assets/Images/RadioButtonUnhecked.png" id="6_m3b3p"]
+[ext_resource type="Texture2D" uid="uid://bqtajwg8jwitg" path="res://Assets/Images/ConfirmButton.png" id="8_q2mxf"]
+[ext_resource type="Texture2D" uid="uid://b34m3fn0ydw4c" path="res://Assets/Images/ConfirmButtonPressed.png" id="9_en3da"]
+[ext_resource type="Texture2D" uid="uid://8dgye8ufcpmq" path="res://Assets/Images/ConfirmButtonFlat.png" id="10_kv818"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_je3um"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_dsa5y"]
+
+[node name="SelectAssetsDialog" type="Window" unique_id=1820244513 node_paths=PackedStringArray("_abePreview", "_sligPreview", "_abeCheckBoxRoot", "_sligCheckBoxRoot", "_exitButton")]
+oversampling_override = 1.0
+title = "Select Assets To Install"
+initial_position = 2
+size = Vector2i(784, 588)
+unresizable = true
+script = ExtResource("1_anh5s")
+_abePreview = NodePath("AbePreview")
+_sligPreview = NodePath("SligPreview")
+_abeCheckBoxRoot = NodePath("MarginContainer/VBoxContainer3/VBoxContainer2/AbeCheckBoxRoot")
+_sligCheckBoxRoot = NodePath("MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot")
+_exitButton = NodePath("ExitButton")
+
+[node name="AbeBackground" type="TextureRect" parent="." unique_id=508141515]
+offset_left = 5.0
+offset_top = 343.0
+offset_right = 245.0
+offset_bottom = 583.0
+texture = ExtResource("2_r1ac7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SligBackground" type="TextureRect" parent="." unique_id=347778835]
+offset_left = -50.0
+offset_top = 30.0
+offset_right = 271.0
+offset_bottom = 281.0
+texture = ExtResource("3_xht23")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SligPreview" type="TextureRect" parent="." unique_id=2004711451]
+offset_left = 76.0
+offset_top = 83.0
+offset_right = 206.0
+offset_bottom = 203.0
+texture = ExtResource("4_q2mxf")
+expand_mode = 1
+
+[node name="AbePreview" type="TextureRect" parent="." unique_id=25228276]
+offset_left = 86.0
+offset_top = 370.0
+offset_right = 206.0
+offset_bottom = 541.0
+texture = ExtResource("5_en3da")
+expand_mode = 1
+
+[node name="Overlay" type="TextureRect" parent="." unique_id=278731649]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_m3b3p")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2056746367]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 270
+theme_override_constants/margin_top = 168
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer" unique_id=991150834]
+layout_mode = 2
+theme_override_constants/separation = -28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer3" unique_id=1387660103]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer3/VBoxContainer" unique_id=1296400248]
+modulate = Color(0.65882355, 0.6, 0.14509805, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+text = "Slig Skin     "
+horizontal_alignment = 1
+
+[node name="SligCheckBoxRoot" type="GridContainer" parent="MarginContainer/VBoxContainer3/VBoxContainer" unique_id=1911063434]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/v_separation = -14
+columns = 2
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=937121309]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_je3um")
+text = "AE Tubes"
+metadata/image = "uid://cedwu12o32i30"
+metadata/file_id = "slig_ae_tubes"
+
+[node name="CheckBox2" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=20655236]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_pressed = true
+button_group = SubResource("ButtonGroup_je3um")
+text = "AE No Tubes"
+metadata/image = "uid://y2ug4a0kchv8"
+metadata/file_id = "slig_ae_no_tubes"
+
+[node name="CheckBox3" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=1122906576]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_je3um")
+text = "AO Tubes"
+metadata/image = "uid://cd2loqynla1xa"
+metadata/file_id = "slig_ao_tubes"
+
+[node name="CheckBox4" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=1202310744]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_je3um")
+text = "AO No Tubes"
+metadata/image = "uid://detsx4mqwn4lr"
+metadata/file_id = "slig_ao_no_tubes"
+
+[node name="CheckBox6" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=1403486305]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_je3um")
+text = "MO Tubes"
+metadata/image = "uid://lbn86jlowkb6"
+metadata/file_id = "slig_mo_tubes"
+
+[node name="CheckBox5" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer/SligCheckBoxRoot" unique_id=1133575936]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_je3um")
+text = "MO No Tubes"
+metadata/image = "uid://ds1ky0q2lipvj"
+metadata/file_id = "slig_mo_no_tubes"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer3" unique_id=772161891]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer3/VBoxContainer2" unique_id=340065412]
+modulate = Color(0.65882355, 0.6, 0.14509805, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+text = "Abe Skin"
+
+[node name="AbeCheckBoxRoot" type="VBoxContainer" parent="MarginContainer/VBoxContainer3/VBoxContainer2" unique_id=1046477421]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = -14
+
+[node name="CheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer2/AbeCheckBoxRoot" unique_id=866917277]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_pressed = true
+button_group = SubResource("ButtonGroup_dsa5y")
+text = "Original"
+metadata/image = "uid://8rq8dxicd3hp"
+metadata/file_id = "abe_original"
+
+[node name="CheckBox2" type="CheckBox" parent="MarginContainer/VBoxContainer3/VBoxContainer2/AbeCheckBoxRoot" unique_id=574377659]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_asvt5")
+theme_override_font_sizes/font_size = 42
+theme_override_icons/radio_checked = ExtResource("6_54gxj")
+theme_override_icons/radio_unchecked = ExtResource("6_m3b3p")
+button_group = SubResource("ButtonGroup_dsa5y")
+text = "FMV"
+metadata/image = "uid://cf3movymcl2xr"
+metadata/file_id = "abe_fmv"
+
+[node name="ExitButton" type="TextureButton" parent="." unique_id=922536534]
+offset_left = 609.0
+offset_top = 490.0
+offset_right = 761.0
+offset_bottom = 564.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("8_q2mxf")
+texture_pressed = ExtResource("9_en3da")
+texture_hover = ExtResource("10_kv818")
+ignore_texture_size = true
+stretch_mode = 4
