@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 namespace AbeHDLauncher.Core;
@@ -24,6 +25,7 @@ public partial class Launcher : Control
     private double _sinceTextUpdate;
     private long _lastDone;
     private double _speed;
+    private readonly Dictionary<GameType, string> _gameInstallPaths = [];
 
     // Called when the node enters the scene tree for the first time.
     public override async void _Ready()
@@ -37,6 +39,9 @@ public partial class Launcher : Control
             QuitLauncher();
             return;
         }
+
+        _gameInstallPaths[GameType.AO] = aoInstallPath;
+        _gameInstallPaths[GameType.AE] = aeInstallPath;
 
         //if (aoInstallPath == null)
         {
@@ -73,13 +78,13 @@ public partial class Launcher : Control
 
         _selectAssetsDialog.SelectionAccepted += (Godot.Collections.Array<string> selectedAssetIds) =>
         {
-            _assetsManager.StartInstallation(_selectedGame, selectedAssetIds);
+            _assetsManager.StartInstallation(_selectedGame, selectedAssetIds, _gameInstallPaths[_selectedGame]);
         };
 
         _aoButton.Pressed += () => SetSelectedGame(GameType.AO);
         _aeButton.Pressed += () => SetSelectedGame(GameType.AE);
 
-        _playButton.Pressed += () => _reliveProcess.LaunchGame(_selectedGame, false);
+        _playButton.Pressed += () => _reliveProcess.LaunchGame(false, _gameInstallPaths[_selectedGame], new AbeHDMod(_selectedGame));
 
         SetSelectedGame(GameType.AE);
 
@@ -102,7 +107,7 @@ public partial class Launcher : Control
         };
         _quitDialog.Canceled += _quitDialog.Hide;
 
-        //await _assetsManager.TestInstall(GameType.AE);
+        //await _assetsManager.TestInstall(GameType.AE, aeInstallPath);
         //_assetsManager.ConvertReliveData();
     }
 

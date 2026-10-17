@@ -13,16 +13,16 @@ public class ReliveProcess : IDisposable
     private Process _process;
     public Action Exited;
 
-    public bool LaunchGame(GameType gameType, bool onlyConvertData)
+    public bool LaunchGame(bool onlyConvertData, string workingDirectory, AbeHDMod mod = null)
     {
-        var relivePath = GameDetector.GetGameInstallPath(gameType);
+        var relivePath = string.Empty;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            relivePath = Path.Combine(relivePath, "relive.exe");
+            relivePath = Path.Combine(workingDirectory, "relive.exe");
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            relivePath = Path.Combine(relivePath, "relive-x86_64.AppImage");
+            relivePath = Path.Combine(workingDirectory, "relive-x86_64.AppImage");
         }
 
         if (!FileAccess.FileExists(relivePath))
@@ -34,13 +34,20 @@ public class ReliveProcess : IDisposable
         var psi = new ProcessStartInfo
         {
             FileName = relivePath,
-            WorkingDirectory = Path.GetDirectoryName(relivePath)!,
+            WorkingDirectory = workingDirectory,
             UseShellExecute = false,
         };
+
+        psi.ArgumentList.Add("-renderer=gl");
 
         if (onlyConvertData)
         {
             psi.ArgumentList.Add("-convert");
+        }
+
+        if (mod != null)
+        {
+            psi.ArgumentList.Add($"-mod={mod.Name}");
         }
 
         try

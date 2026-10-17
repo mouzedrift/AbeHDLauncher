@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FileAccess = Godot.FileAccess;
 
@@ -80,12 +81,14 @@ public partial class AssetsManager : Node
     private BatchDownloader _batchDownloader = new();
     private ReliveProcess _reliveConversionProcess;
     private GameType _gameToInstall;
-    private HashSet<AssetFile> _assetsToInstall = [];
+    private readonly HashSet<AssetFile> _assetsToInstall = [];
     private InstalledAssetsRecord _installed = new();
+    private string _baseInstallPath;
 
     public static string AssetsDownloadPath => "user://assets";
     public static string GlobalizedAssetsDownloadPath => ProjectSettings.GlobalizePath(AssetsDownloadPath);
     private const string ManifestUrl = "https://raw.githubusercontent.com/mouzedrift/abe-hd-assets/refs/heads/main/manifest.json";
+    private const string ReliveModName = "AbeHD";
 
     [Signal] public delegate void DownloadsFinishedEventHandler();
     [Signal] public delegate void InstallationFinishedEventHandler();
@@ -207,11 +210,13 @@ public partial class AssetsManager : Node
         return true;
     }
 
-    public async Task TestInstall(GameType gameType)
+    public async Task TestInstall(GameType gameType, string baseInstallPath)
     {
-        _assetsToInstall.Clear();
-
         _gameToInstall = gameType;
+        _baseInstallPath = baseInstallPath;
+
+        _assetsToInstall.Clear();
+        CreateReliveModInfoJson(gameType);
 
         _assetsToInstall.Add(_manifest.ExeForCurrentPlatform());
         InstallReliveExe(gameType);
@@ -229,12 +234,13 @@ public partial class AssetsManager : Node
         return _manifest;
     }
 
-    public void StartInstallation(GameType gameType, Godot.Collections.Array<string> skinIds)
+    public void StartInstallation(GameType gameType, Godot.Collections.Array<string> skinIds, string baseInstallPath)
     {
-        string gameInstallPath = GameDetector.GetGameInstallPath(gameType);
-
         _gameToInstall = gameType;
-        _installed = InstalledAssetsRecord.Load(gameInstallPath);
+        _installed = InstalledAssetsRecord.Load(baseInstallPath);
+        _baseInstallPath = baseInstallPath;
+
+        CreateReliveModInfoJson(gameType);
 
         _assetsToInstall.Clear();
 
@@ -276,7 +282,7 @@ public partial class AssetsManager : Node
             _ = InstallSpritesAndCamsAsync(_gameToInstall);
         };
 
-        if (!_reliveConversionProcess.LaunchGame(_gameToInstall, true))
+        if (!_reliveConversionProcess.LaunchGame(true, _baseInstallPath))
         {
             GD.Print("couldn't launch relive to do data conversion");
             return;
@@ -288,17 +294,12 @@ public partial class AssetsManager : Node
         SetStage(InstallStage.InstallingRelive);
 
         var zipPath = Path.Combine(GlobalizedAssetsDownloadPath, _manifest.ExeForCurrentPlatform().GetFileName());
-        var outPath = GameDetector.GetGameInstallPath(gameType);
-        if (outPath == null)
-        {
-            return false;
-        }
 
-        ZipFile.ExtractToDirectory(zipPath, outPath, true);
+        ZipFile.ExtractToDirectory(zipPath, _baseInstallPath, true);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            OS.Execute("chmod", ["+x", Path.Combine(outPath, "relive-x86_64.AppImage")]);
+            OS.Execute("chmod", ["+x", Path.Combine(_baseInstallPath, "relive-x86_64.AppImage")]);
         }
 
         return true;
@@ -416,8 +417,7 @@ public partial class AssetsManager : Node
             // TODO: ao lvl names
         }
 
-        string gameStr = gameType == GameType.AE ? "ae" : "ao";
-        return Path.Combine(gameInstallPath, "relive_data", gameStr, "levels", lvlFolderName, pathNumStr, $"{camNumStr}.png");
+        return Path.Combine(gameInstallPath, "relive_data", "mods", ReliveModName, "levels", lvlFolderName, pathNumStr, $"{camNumStr}.png");
     }
 
     private static bool ExtractCams(string zipFilePath, AssetFile assetFile, string gameInstallPath, GameType gameType)
@@ -465,13 +465,7 @@ public partial class AssetsManager : Node
 
         GD.Print("installing sprites and cams");
 
-        string gameInstallPath = GameDetector.GetGameInstallPath(gameType);
-        if (gameInstallPath == null)
-        {
-            return;
-        }
-
-        string zipAnimOutPath = Path.Combine(gameInstallPath, "relive_data", gameType == GameType.AE ? "ae" : "ao", "animations");
+        string zipAnimOutPath = Path.Combine(_baseInstallPath, "relive_data", "mods", ReliveModName, "animations");
         Directory.CreateDirectory(zipAnimOutPath);
 
         var assets = _assetsToInstall;
@@ -498,7 +492,7 @@ public partial class AssetsManager : Node
                 }
                 else if (assetFile.AssetType == AssetType.Cam)
                 {
-                    if (ExtractCams(zipFilePath, assetFile, gameInstallPath, gameType))
+                    if (ExtractCams(zipFilePath, assetFile, _baseInstallPath, gameType))
                     {
                         installed.Add(assetFile);
                     }
@@ -513,7 +507,7 @@ public partial class AssetsManager : Node
             _installed.MarkInstalled(asset);
         }
 
-        _installed.Save(gameInstallPath);
+        _installed.Save(_baseInstallPath);
 
         SetStage(InstallStage.Finished);
         CallDeferred(GodotObject.MethodName.EmitSignal, SignalName.InstallationFinished);
@@ -528,5 +522,23 @@ public partial class AssetsManager : Node
     public bool IsInstallationRunning()
     {
         return Stage != InstallStage.Idle && Stage != InstallStage.Finished;
+    }
+
+    private bool CreateReliveModInfoJson(GameType gameType)
+    {
+        var modInfo = new AbeHDMod(gameType);
+
+        var modDir = Path.Combine(_baseInstallPath, "relive_data", "mods", ReliveModName);
+        Directory.CreateDirectory(modDir);
+
+        using var file = FileAccess.Open(Path.Combine(modDir, "modinfo.json"), FileAccess.ModeFlags.Write);
+        if (file == null)
+        {
+            GD.Print($"couldn't open modinfo.json for writing: {FileAccess.GetOpenError()}");
+            return false;
+        }
+
+        file.StoreString(JsonSerializer.Serialize(modInfo));
+        return true;
     }
 }
